@@ -1,20 +1,23 @@
-from flask import Flask, redirect, render_template, request, url_for, make_response
+from flask import Flask, redirect, render_template, request, session, url_for, make_response
 app = Flask(__name__)
+app.secret_key = "session_secrect_key"
 
 @app.route("/")
 def hello_world():
     name = request.cookies.get("userID")
-    if name:
-        return "Hello "+name
+    if name and session:
+        return "Hello "+name+" "+session["username"]
     else:
-        return "Hello world"
+        return "Hello world!"
 
 @app.route("/html")
 def hello_html():
+    session.pop("username", None)
     return "<html><body><h1>Hello World</h1></body></html>"
 
 @app.route("/html/<name>")
 def hello_html_param(name):
+    session["username"] = "Test user"
     resp = make_response(render_template("hello.html", name=name))
     resp.set_cookie('userID', name)
     return resp
