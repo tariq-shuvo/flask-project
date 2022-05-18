@@ -1,4 +1,4 @@
-from flask import Flask, redirect, render_template, url_for
+from flask import Flask, redirect, render_template, request, url_for
 app = Flask(__name__)
 
 @app.route("/")
@@ -32,6 +32,12 @@ def blog(postID):
 @app.route("/rev/<float:revNo>")
 def revision(revNo):
     return "Revision number is %f!" %revNo
+
+@app.route("/login", methods=["POST"])
+def login():
+    if request.method == "POST":
+        user = request.form["nm"]
+        return user
 
 @app.route("/redirect/<name>")
 def redirect_admin(name):
