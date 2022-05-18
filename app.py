@@ -1,9 +1,13 @@
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, redirect, render_template, request, url_for, make_response
 app = Flask(__name__)
 
 @app.route("/")
 def hello_world():
-    return "Hello world"
+    name = request.cookies.get("userID")
+    if name:
+        return "Hello "+name
+    else:
+        return "Hello world"
 
 @app.route("/html")
 def hello_html():
@@ -11,7 +15,9 @@ def hello_html():
 
 @app.route("/html/<name>")
 def hello_html_param(name):
-    return render_template("hello.html", name=name)
+    resp = make_response(render_template("hello.html", name=name))
+    resp.set_cookie('userID', name)
+    return resp
 
 @app.route("/html/marks/<int:mark>")
 def marks_html_param(mark):
